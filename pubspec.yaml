@@ -1,0 +1,48 @@
+name: rsa_showroom
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  dio: ^5.9.0
+  flutter:
+    sdk: flutter
+  geocoding: ^4.0.0
+  geolocator: ^13.0.3
+  google_fonts: ^6.2.1
+  provider: ^6.1.4
+  animated_bottom_navigation_bar: ^1.4.0
+  connectivity_plus: ^6.1.4
+  shared_preferences: ^2.5.3
+  #uni_links: ^0.5.1
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.3
+
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter  
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"  # Path to foreground image 
+  adaptive_icon_background: "#FFFFFF"
+
+ 
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/logo.png
+    - assets/images/homeBg.png
