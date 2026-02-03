@@ -38,6 +38,7 @@ class LoginServices {
       // ✅ CHECK STATUS CODE
       if (response.statusCode == 201 || response.statusCode == 200) {
         print('Signup success');
+        
         return true;
       }
 
@@ -83,8 +84,10 @@ class LoginServices {
           await prefs.setString('name', data['name']);
           await prefs.setString('phoneNumber', phoneNumber);
           await prefs.setString('showroomId', showroomId);
+          await prefs.setString('staffId',data['staffId']);
 
           print('showroom token: ${data['token']}');
+          print('showroom staffId: ${data['staffId']}');
 
           print('Login success & data saved');
           return true;

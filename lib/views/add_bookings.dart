@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:rsa_showroom/core/constants/spacing_constants.dart';
 import 'package:rsa_showroom/core/utils/base_scafold.dart';
@@ -22,11 +23,20 @@ class _AddBookingsState extends State<AddBookings> {
       TextEditingController();
   final TextEditingController _commentsController = TextEditingController();
   String? selectedType;
+  late String fileNumber;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    selectedType = 'Service Center'; // first item value
+    selectedType = 'Service Center';
+    final number = generateFileNumber();
+    fileNumber = 'SHOWROOM - $number';
+  }
+
+  String generateFileNumber() {
+    final random = Random();
+    return random.nextInt(1000).toString().padLeft(3, '0');
   }
 
   @override
@@ -46,9 +56,9 @@ class _AddBookingsState extends State<AddBookings> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Booking ID : ", style: _redBoldStyle()),
-                    kHeight20,
-                    Text("File Number : ", style: _redBoldStyle()),
+                    // Text("Booking ID : ", style: _redBoldStyle()),
+                    // kHeight20,
+                    Text("File Number : $fileNumber", style: _redBoldStyle()),
                     kHeight10,
                     dropdownField<String>(
                       value: selectedType,
@@ -104,27 +114,71 @@ class _AddBookingsState extends State<AddBookings> {
                         suffixIcon: Icon(Icons.comment)),
                     kHeight10,
                     button(
-                        buttonText: 'SUBMIT',
-                        color: const Color(0xFFFF0000),
-                        buttonPressed: () async {
-                          if(_formKey.c)
-                          final success = await BookingService().addBooking(
-                            customerName: _nameController.text.trim(),
-                            mob1: _phoneController.text.trim(),
-                            serviceCategory: selectedType!,
-                            customerVehicleNumber:
-                                _vehicleNumberController.text.trim(),
-                            comments: _commentsController.text.trim(),
-                            showroom: "694cc84328153b3d845b49ff",
-                          
-                          );
+                      buttonText: _isSubmitting ? 'SUBMITTING...' : 'SUBMIT',
+                      color:
+                          _isSubmitting ? Colors.grey : const Color(0xFFFF0000),
+                      buttonPressed: _isSubmitting
+                          ? null // 👈 disables button
+                          : () async {
+                              // Validate form
+                              if (!_formKey.currentState!.validate()) return;
 
-                          if (success) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Booking added")),
-                            );
-                          }
-                        })
+                              if (selectedType == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text("Please select service category"),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              setState(() {
+                                _isSubmitting = true;
+                              });
+
+                              final success = await BookingService().addBooking(
+                                fileNumber: fileNumber,
+                                customerName: _nameController.text.trim(),
+                                mob1: _phoneController.text.trim(),
+                                serviceCategory: selectedType!,
+                                customerVehicleNumber:
+                                    _vehicleNumberController.text.trim(),
+                                comments: _commentsController.text.trim(),
+                                showroom: "694cc84328153b3d845b49ff",
+                              );
+
+                              setState(() {
+                                _isSubmitting = false;
+                              });
+
+                              if (success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Booking added successfully.'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+
+                                Future.delayed(const Duration(seconds: 1), () {
+                                  if (!mounted) return;
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/home',
+                                    (route) => false,
+                                  );
+                                });
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Failed to add booking"),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                    ),
                   ],
                 ),
               ),

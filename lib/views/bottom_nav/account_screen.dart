@@ -1,17 +1,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:rsa_showroom/core/utils/base_scafold.dart';
+import 'package:rsa_showroom/models/showroon_staff_model.dart';
 
 class AccountScreen extends StatelessWidget {
+   final ShowroomStaffModel staff;
 
-
-  const AccountScreen({super.key});
+  const AccountScreen({super.key, required this.staff});
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
       child: Scaffold(
-        appBar: AppBar(title: Text("Driver Profile")),
+        appBar: AppBar(title: Text("Staff Profile")),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -25,16 +26,20 @@ class AccountScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 100,
-                      backgroundImage: AssetImage('assets/images/logo.png')as ImageProvider,
+                      backgroundImage: AssetImage('assets/images/homeBg.png')as ImageProvider,
                     ),
                     const SizedBox(height: 16),
-                    
+                    Text(
+                      staff.name,
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 8),
 
-                    // _buildInfoRow("ID Number", driver.idNumber),
-                    // _buildInfoRow("Phone", driver.phone),
-                    // _buildInfoRow("Personl No", driver.personalPhoneNumber),
-                    // _buildInfoRow("Cash in Hand", "₹${driver.cashInHand}"),
+                    _buildInfoRow("Designation", staff.designation),
+                    _buildInfoRow("Phone No", staff.phoneNumber),
+                    _buildInfoRow("Whatsapp No", staff.whatsappNumber),
+                    _buildInfoRow("Reward Points", "₹${staff.rewardPoints}"),
                     // _buildInfoRow("Driver Salary", "₹${driver.driverSalary}"),
                     // _buildInfoRow("Advance", "₹${driver.advance}"),
                     // //  _buildInfoRow("Balance Amount", "₹${driver.balanceAmount}"),

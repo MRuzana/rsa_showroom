@@ -131,39 +131,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     buttonText: 'SIGN UP',
                     color: const Color(0xFFFF0000),
                     buttonPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final success = await LoginServices().sendSignUpDetails(
-                          name: _nameController.text.trim(),
-                          phone: _phoneController.text.trim(),
-                          designation: _designationController.text.trim(),
-                          whatsappNumber: _watsappController.text.trim(),
-                          showroomId: '694cc84328153b3d845b49ff',
+                      // 1️⃣ Validate form
+                      if (!_formKey.currentState!.validate()) return;
+
+                      // 2️⃣ Call API
+                      final success = await LoginServices().sendSignUpDetails(
+                        name: _nameController.text.trim(),
+                        phone: _phoneController.text.trim(),
+                        designation: _designationController.text.trim(),
+                        whatsappNumber: _watsappController.text.trim(),
+                        showroomId: '694cc84328153b3d845b49ff',
+                      );
+
+                      // 3️⃣ Handle response
+                      if (success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Signup successful! Please login.'),
+                            backgroundColor: Colors.green,
+                          ),
                         );
 
-                        if (success) {
-                          //  SUCCESS MESSAGE
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Signup successful! Please login.'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-
-                          // Optional: navigate to login after delay
-                          Future.delayed(const Duration(seconds: 1), () {
-                            Navigator.pushReplacementNamed(context, '/signIn');
-                          });
-                        } else {
-
-                          //  USER EXISTS / FAILED
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('User already exists. Please login.'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
+                        // 4️⃣ Navigate after short delay
+                        Future.delayed(const Duration(seconds: 1), () {
+                          if (!mounted) return;
+                          Navigator.pushReplacementNamed(context, '/signIn');
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('User already exists. Please login.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     },
                   ),

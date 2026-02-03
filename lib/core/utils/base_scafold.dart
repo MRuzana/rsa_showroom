@@ -5,7 +5,7 @@ import 'package:rsa_showroom/controllers/network_provider.dart';
 
 class BaseScaffold extends StatelessWidget {
   final Widget child;
-  const BaseScaffold({required this.child});
+  const BaseScaffold({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

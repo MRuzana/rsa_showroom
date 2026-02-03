@@ -38,9 +38,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:scheme="https"
-                android:host="rsa-staff-ilqh.onrender.com"
-                android:pathPrefix="/auth/cover-register" />
+                android:scheme="rsastaff"
+                android:host="signIn"/>
             </intent-filter>
 
         </activity>

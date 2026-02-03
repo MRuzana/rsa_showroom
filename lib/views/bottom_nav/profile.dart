@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rsa_showroom/core/utils/base_scafold.dart';
+import 'package:rsa_showroom/models/showroon_staff_model.dart';
+import 'package:rsa_showroom/services/showroom_staff_sevices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -15,7 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   String? staffName;
   String? staffPhone;
-  //late Future<List<BookingModel>> _futureBookings;
+  ShowroomStaffModel? staff;
 
   @override
   void initState() {
@@ -81,14 +83,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ListView(
                 children: [
                   _buildSettingsTile(Icons.person, "Account", () {
-                    // if (provider != null) {
-                    //   Navigator.pushNamed(context, '/account',
-                    //       arguments: provider);
-                    // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     SnackBar(content: Text("Provider data not loaded")),
-                    //   );
-                    // }
+                    if (staff != null) {
+                      Navigator.pushNamed(context, '/account',
+                          arguments: staff);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Staff details not loaded")),
+                      );
+                    }
                   }),
                   _buildSettingsTile(Icons.lock, "Privacy and security", () {}),
                   _buildSettingsTile(Icons.info, "About", () {}),
@@ -150,17 +152,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.remove('phoneNumber');
     await prefs.remove('showroomId');
     await prefs.remove('isLoggedIn');
+    await prefs.remove('staffId');
     await prefs.clear();
 
     Navigator.pushNamedAndRemoveUntil(context, '/signIn', (route) => false);
   }
 
   Future<void> loadStaffInfo() async {
-    final prefs = await SharedPreferences.getInstance();
+    ShowroomStaffModel? staffData =
+          await ShowroomStaffSevices().fetchStaffDetails();
 
     setState(() {
-      staffName = prefs.getString('name');
-      staffPhone = prefs.getString('phoneNumber');
+      staff = staffData;
+      staffName = staffData.name;
+      staffPhone = staffData.phoneNumber;
     });
   }
 }

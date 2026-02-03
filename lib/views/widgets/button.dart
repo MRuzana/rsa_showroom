@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 Widget button({
   required String buttonText,
-  required void Function() buttonPressed,
+  required Future<void> Function()? buttonPressed,
+  // required void Function() buttonPressed,
   Color? color,
   double? size
 }) {

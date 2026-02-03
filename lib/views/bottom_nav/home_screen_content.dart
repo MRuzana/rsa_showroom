@@ -19,12 +19,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   @override
   void initState() {
     super.initState();
-    final locationProvider =
-        Provider.of<LocationProvider>(context, listen: false);
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     locationProvider.startLocationUpdates(); // Starts location updates
-    // startService();
     loadStaffInfo();
-    // _sendFcmToken();
   }
 
   @override
@@ -65,35 +62,35 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                         crossAxisSpacing: 20,
                         childAspectRatio: 1.2,
                         children: [
-                          _buildCard(Icons.local_shipping, "Add Booking",
+                          _buildCard(Icons.add_box, "Add Booking",
                               "Add new bookings", Colors.redAccent, () {
                             Navigator.pushNamed(context, '/addBookings');
                           }),
-                          _buildCard(Icons.assignment_turned_in, "Ongoing",
-                              "Review completed trips", Colors.blueAccent, () {
-                            Navigator.pushNamed(context, '/finished');
+                          _buildCard(Icons.pending_actions, "Ongoing",
+                              "Review ongoing trips", Colors.blueAccent, () {
+                            Navigator.pushNamed(context, '/onGoing');
                           }),
                           _buildCard(
                               Icons.pending_actions,
                               "Scheduled",
                               "Manage scheduled trips",
-                              Colors.orangeAccent, () {
+                              Colors.grey, () {
                             Navigator.pushNamed(context, '/pending');
                           }),
-                          _buildCard(Icons.account_balance_wallet, "Completed",
-                              "View unpaid bookings", Colors.greenAccent, () {
+                          _buildCard(Icons.check_box, "Completed",
+                              "View completed bookings", Colors.green, () {
                             Navigator.pushNamed(context, '/notPaid');
                           }),
                           _buildCard(
                               Icons.list_alt,
                               "Pending",
-                              "Browse all your bookings",
+                              "Browse all pending bookings",
                               Colors.purpleAccent, () {
                             Navigator.pushNamed(context, '/allJobs');
                           }),
-                          _buildCard(Icons.bar_chart, "Report",
-                              "View your reports", Colors.grey, () {
-                            Navigator.pushNamed(context, '/report');
+                          _buildCard(Icons.star, "Rewards",
+                              "Redeem your rewards", Colors.orangeAccent, () {
+                            Navigator.pushNamed(context, '/reward');
                           }),
                         ],
                       );
@@ -217,6 +214,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     setState(() {
       staffName = prefs.getString('name');
       staffPhone = prefs.getString('phoneNumber');
+
     });
   }
 }

@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:rsa_showroom/api/api_constants.dart';
 import 'package:rsa_showroom/api/endpoints.dart';
+import 'package:rsa_showroom/models/booking_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingService {
@@ -32,12 +31,47 @@ class BookingService {
     );
   }
 
-  String generateFileNumber() {
-  final random = Random();
-  return random.nextInt(1000).toString().padLeft(3, '0');
-}
+    Future<Map<String, dynamic>> fetchShowroomStaffBooking(
+    int page,
+    int limit,
+  ) async {
+    try {
+      final response = await _dio.get(
+        EndPoints.fetchBooking,
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        final List bookingsJson = data['data']['bookings'];
+        final pagination = data['data']['pagination'];
+
+        List<BookingModel> bookings = bookingsJson
+            .map((e) => BookingModel.fromJson(e))
+            .toList();
+
+        return {
+          'bookings': bookings,
+          'total': pagination['total'],
+          'page': pagination['page'],
+          'limit': pagination['limit'],
+          'totalPages': pagination['totalPages'],
+        };
+      } else {
+        throw Exception('Failed to load bookings');
+      }
+    } on DioException catch (e) {
+      print('Dio error: ${e.response?.data ?? e.message}');
+      throw Exception('Failed to fetch bookings');
+    }
+  }
 
   Future<bool> addBooking({
+    required String fileNumber,
     required String customerName,
     required String mob1,
     required String serviceCategory,
@@ -46,7 +80,6 @@ class BookingService {
     required String showroom,
   }) async {
     try {
-      final String fileNumber = generateFileNumber();
       final response = await _dio.post(
         EndPoints.addBooking,
         data: {
