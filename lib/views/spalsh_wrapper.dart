@@ -27,25 +27,29 @@ class _SplashWrapperState extends State<SplashWrapper> {
   }
 
   Future<void> _handleInitialLink() async {
-    final uri = await _appLinks.getInitialLink();
+  final uri = await _appLinks.getInitialLink();
 
-    if (uri != null) {
-      _handledDeepLink = true;
-      _handleUri(uri);
-    } else {
-      _checkLoginStatus();
-    }
+  if (uri != null) {
+    _handledDeepLink = true;
+    _handleUri(uri);
+    return;
   }
+
+  _checkLoginStatus();
+}
 
   void _handleUri(Uri uri) {
-    if (_handledDeepLink == false) {
-      _handledDeepLink = true;
-    }
-
-    if (uri.scheme == 'rsastaff' && uri.host == 'signIn') {
-      Navigator.pushReplacementNamed(context, '/signIn');
-    }
+  if (_handledDeepLink == false) {
+    _handledDeepLink = true;
   }
+
+  if (uri.scheme == 'rsastaff' && uri.host == 'signIn') {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/signIn');
+    });
+  }
+}
 
   Future<void> _checkLoginStatus() async {
     await Future.delayed(const Duration(seconds: 2)); // splash delay
